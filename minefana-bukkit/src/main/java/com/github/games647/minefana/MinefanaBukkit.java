@@ -3,6 +3,7 @@ package com.github.games647.minefana;
 import com.github.games647.minefana.common.InfluxConnector;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.influxdb.dto.Point;
 
 public final class MinefanaBukkit extends JavaPlugin {
 
@@ -20,6 +21,13 @@ public final class MinefanaBukkit extends JavaPlugin {
         influxConnector.init();
 
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        TicksPerSecondTask task = new TicksPerSecondTask();
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 60L, 1L);
+
+        getServer().getScheduler()
+                .scheduleSyncRepeatingTask(this, () -> influxConnector.send(Point.measurement("tps")
+                        .addField("ticks per second", task.getLastTicks())
+                        .build()), 60L, 60L);
     }
 
     public InfluxConnector getInfluxConnector() {
