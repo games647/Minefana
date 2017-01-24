@@ -1,0 +1,4 @@
+name: Minefana
+version: @version@
+main: com.github.games647.minefana.MinefanaBungeeCord
+description: Sends minecraft statistics to a InfluxDB to be displayed by grafana

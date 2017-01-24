@@ -8,6 +8,7 @@ Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 
 * BungeeCord
 * Spigot
+* Sponge
 
 ## Stats
 

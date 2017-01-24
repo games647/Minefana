@@ -1,0 +1,21 @@
+plugins {
+    id 'org.spongepowered.plugin' version '0.8.1'
+    id 'flavor.pie.promptsign' version '1.0.2'
+}
+
+dependencies {
+    compile project(':minefana-common')
+    compile 'org.spongepowered:spongeapi:5.0.0'
+}
+
+processResources {
+    from('src/main/resources') {
+        expand 'version': project.version
+    }
+}
+
+shadowJar {
+    dependencies {
+        include(dependency(':minefana-common'))
+    }
+}

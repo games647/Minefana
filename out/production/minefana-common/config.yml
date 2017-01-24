@@ -1,0 +1,7 @@
+# Minefana settings
+
+# database settings
+db_url: 'http://127.0.0.1:8086'
+db_name: 'minecraft_stats'
+db_user: 'username'
+db_pass: 'pass'
