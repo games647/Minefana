@@ -1,6 +1,7 @@
 package com.github.games647.minefana;
 
 import com.github.games647.minefana.common.InfluxConnector;
+
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -10,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.logging.Level;
 
 public final class MinefanaBungeeCord extends Plugin {
@@ -43,10 +45,10 @@ public final class MinefanaBungeeCord extends Plugin {
             getDataFolder().mkdir();
         }
 
-        File configFile = new File(getDataFolder(), "config.yml");
-        if (!configFile.exists()) {
+        Path configFile = getDataFolder().toPath().resolve("config.yml");
+        if (Files.notExists(configFile)) {
             try (InputStream in = getResourceAsStream("config.yml")) {
-                Files.copy(in, configFile.toPath());
+                Files.copy(in, configFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
