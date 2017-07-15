@@ -3,10 +3,15 @@ package com.github.games647.minefana;
 import com.github.games647.minefana.common.InfluxConnector;
 import com.google.inject.Inject;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
+
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.yaml.YAMLConfigurationLoader;
-
 import org.influxdb.dto.Point;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
@@ -18,12 +23,6 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
-
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
 
 @Plugin(
         id = "minefana-sponge",
