@@ -1,6 +1,7 @@
 package com.github.games647.minefana;
 
 import com.github.games647.minefana.common.InfluxConnector;
+import com.github.games647.minefana.common.MeasurementType;
 import com.google.inject.Inject;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.yaml.YAMLConfigurationLoader;
+
 import org.influxdb.dto.Point;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
@@ -59,7 +61,7 @@ public class MinefanaSponge {
 
         game.getScheduler().createTaskBuilder()
                 .interval(1, TimeUnit.SECONDS)
-                .execute(() -> influxConnector.send(Point.measurement("tps")
+                .execute(() -> influxConnector.send(Point.measurement(MeasurementType.TPS.getId())
                         .addField("ticks per second", game.getServer().getTicksPerSecond())
                         .build()))
                 .submit(this);
@@ -108,7 +110,7 @@ public class MinefanaSponge {
     }
 
     private void updatePlayersStat() {
-        Point playerPoint = Point.measurement("players")
+        Point playerPoint = Point.measurement(MeasurementType.PLAYERS.getId())
                 .addField("online", game.getServer().getOnlinePlayers().size())
                 .addField("max", game.getServer().getMaxPlayers())
                 .build();

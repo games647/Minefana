@@ -14,7 +14,7 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
-public final class MinefanaBungeeCord extends Plugin {
+public class MinefanaBungeeCord extends Plugin {
 
     private InfluxConnector influxConnector;
 

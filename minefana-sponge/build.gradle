@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     compile project(':minefana-common')
-    compile 'org.spongepowered:spongeapi:5.0.0'
+    compile 'org.spongepowered:spongeapi:7.0.0'
 }
 
 processResources {

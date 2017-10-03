@@ -1,5 +1,7 @@
 package com.github.games647.minefana;
 
+import com.github.games647.minefana.common.MeasurementType;
+
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
@@ -18,6 +20,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(ServerConnectedEvent joinEvent) {
+        joinEvent.getPlayer().getPendingConnection().getVersion();
         sendPlayerUpdate();
     }
 
@@ -27,7 +30,7 @@ public class PlayerListener implements Listener {
     }
 
     private void sendPlayerUpdate() {
-        Point playerPoint = Point.measurement("players")
+        Point playerPoint = Point.measurement(MeasurementType.PLAYERS.getId())
                 .addField("online", ProxyServer.getInstance().getPlayers().size())
                 .addField("max", ProxyServer.getInstance().getConfig().getPlayerLimit())
                 .build();
