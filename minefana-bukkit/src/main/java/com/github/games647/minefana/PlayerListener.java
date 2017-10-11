@@ -1,6 +1,6 @@
 package com.github.games647.minefana;
 
-import com.github.games647.minefana.common.MeasurementType;
+import com.github.games647.minefana.common.AnalyticsType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -29,7 +29,7 @@ public class PlayerListener implements Listener {
     }
 
     private void sendPlayerUpdate() {
-        Point playerPoint = Point.measurement(MeasurementType.PLAYERS.getId())
+        Point playerPoint = AnalyticsType.PLAYERS.newPoint()
                 .addField("online", Bukkit.getOnlinePlayers().size())
                 .addField("max", Bukkit.getMaxPlayers())
                 .build();

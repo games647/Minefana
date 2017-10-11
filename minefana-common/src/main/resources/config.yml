@@ -1,4 +1,4 @@
-# Minefana settings
+# MineFana settings
 
 # database settings
 db_url: 'http://127.0.0.1:8086'

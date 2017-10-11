@@ -1,45 +1,81 @@
 package com.github.games647.minefana;
 
-import com.github.games647.minefana.common.InfluxConnector;
-import com.github.games647.minefana.common.MeasurementType;
+import com.github.games647.minefana.common.AnalyticsCore;
+import com.github.games647.minefana.common.AnalyticsPlugin;
+import com.github.games647.minefana.common.collectors.PingCollector;
+import com.github.games647.minefana.common.collectors.TpsCollector;
 
+import java.nio.file.Path;
+
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.influxdb.dto.Point;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MinefanaBukkit extends JavaPlugin {
+public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
 
-    private InfluxConnector influxConnector;
+    private final Logger logger = LoggerFactory.getLogger(getName());
+    private AnalyticsCore core;
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
-        String dbUrl = getConfig().getString("db_url");
-        String dbName = getConfig().getString("db_name");
-        String dbUser = getConfig().getString("db_user");
-        String dbPass = getConfig().getString("db_pass");
+        core = new AnalyticsCore(this, logger);
+        core.saveDefaultConfig();
 
-        influxConnector = new InfluxConnector(dbUrl, dbName, dbUser, dbPass);
-        influxConnector.init();
+        if (!core.loadConfig()) {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
-        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
-        TicksPerSecondTask task = new TicksPerSecondTask();
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 60L, 1L);
-
-        getServer().getScheduler()
-                .scheduleSyncRepeatingTask(this, () -> influxConnector
-                        .send(Point.measurement(MeasurementType.TPS.getId())
-                                .addField("ticks per second", task.getLastTicks())
-                                .build()), 60L, 60L);
-    }
-
-    public InfluxConnector getInfluxConnector() {
-        return influxConnector;
+        registerEvents();
+        registerTasks();
     }
 
     @Override
     public void onDisable() {
-        if (influxConnector != null) {
-            influxConnector.close();
+        if (core != null) {
+            core.close();
         }
+    }
+
+    @Override
+    public void registerEvents() {
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new PlayerListener(this), this);
+    }
+
+    @Override
+    public void registerTasks() {
+        BukkitScheduler scheduler = getServer().getScheduler();
+
+        TicksPerSecondTask ticksTask = new TicksPerSecondTask();
+        scheduler.runTaskTimer(this, ticksTask, 60L, 1L);
+
+        TpsCollector tpsCollector = new TpsCollector(core.getConnector(), ticksTask::getLastTicks);
+        scheduler.runTaskTimer(this, tpsCollector, 20L, 20L);
+
+        PingCollector pingTask = new PingCollector(core.getConnector(), () -> Bukkit.getOnlinePlayers()
+                .stream()
+                .mapToInt(BukkitUtil::getReflectionPing)
+                .average()
+                .orElse(0));
+        scheduler.runTaskTimer(this, pingTask, 40L, 40L);
+    }
+
+    @Override
+    public Path getPluginFolder() {
+        return getDataFolder().toPath();
+    }
+
+    @Override
+    public Logger getLog() {
+        return logger;
+    }
+
+    @Override
+    public AnalyticsCore getCore() {
+        return core;
     }
 }

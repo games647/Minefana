@@ -14,6 +14,7 @@ Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 
 * online players / may players
 * TPS (ticks per second)
+* Average player ping
 
 ## Planned
 
@@ -21,8 +22,6 @@ Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 * Player GEO_IP
 * Unique new users
 * Player Locale, view distance, 
-* Player ping
-* Resource pack accepted/declined failed to download accepted
 
 ## Screenshot
 

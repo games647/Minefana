@@ -1,7 +1,6 @@
 package com.github.games647.minefana.common;
 
 import java.io.Closeable;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -30,8 +29,8 @@ public class InfluxConnector implements Closeable {
         InfluxDB influxDB = InfluxDBFactory.connect(url, username, password);
         influxDB.createDatabase(username);
 
-        // Flush every 2000 Points, at least every 100ms
-        influxDB.enableBatch(2_000, 100, TimeUnit.MILLISECONDS);
+        // Flush every 2000 Points, at least every 1s
+        influxDB.enableBatch(2_000, 1_000, TimeUnit.MILLISECONDS);
         influxDB.enableGzip();
 
         connection = influxDB;
@@ -41,7 +40,7 @@ public class InfluxConnector implements Closeable {
         send(Collections.singletonList(measurement));
     }
 
-    public void send(Collection<Point> measurements) {
+    public void send(Iterable<Point> measurements) {
         BatchPoints batchPoints = BatchPoints.database(database).retentionPolicy("autogen").build();
         measurements.forEach(batchPoints::point);
         connection.write(batchPoints);

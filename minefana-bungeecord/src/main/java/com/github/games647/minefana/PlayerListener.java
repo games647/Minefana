@@ -1,6 +1,6 @@
 package com.github.games647.minefana;
 
-import com.github.games647.minefana.common.MeasurementType;
+import com.github.games647.minefana.common.AnalyticsType;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -30,11 +30,11 @@ public class PlayerListener implements Listener {
     }
 
     private void sendPlayerUpdate() {
-        Point playerPoint = Point.measurement(MeasurementType.PLAYERS.getId())
+        Point playerPoint = AnalyticsType.PLAYERS.newPoint()
                 .addField("online", ProxyServer.getInstance().getPlayers().size())
                 .addField("max", ProxyServer.getInstance().getConfig().getPlayerLimit())
                 .build();
 
-        plugin.getInfluxConnector().send(playerPoint);
+        plugin.getCore().getConnector().send(playerPoint);
     }
 }

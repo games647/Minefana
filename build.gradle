@@ -22,5 +22,7 @@ subprojects {
     
     dependencies {
         compile 'org.influxdb:influxdb-java:2.7'
+        compile 'net.md-5:bungeecord-config:1.12-SNAPSHOT'
+        compile 'org.slf4j:slf4j-jdk14:1.7.25'
     }
 }
