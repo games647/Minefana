@@ -1,8 +1,7 @@
 package com.github.games647.minefana.common;
 
-import com.google.common.collect.Maps;
-
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 public enum ProtocolVersion {
@@ -18,10 +17,10 @@ public enum ProtocolVersion {
     MC_1_9(107),
     MC_1_8(47);
 
-    private static final Map<Integer, ProtocolVersion> byId = Maps.newHashMap();
+    private static final Map<Integer, ProtocolVersion> byId = new HashMap<>();
     static {
         Arrays.stream(ProtocolVersion.values())
-                .forEach(version -> byId.put(version.getProtocol(), version));
+                .forEach(version -> byId.put(version.protocol, version));
     }
 
     public ProtocolVersion getVersion(int protocol) {

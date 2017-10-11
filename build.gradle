@@ -1,12 +1,7 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
-    }
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
+    id 'java'
+    id 'maven'
 }
 
 subprojects {
@@ -26,6 +21,6 @@ subprojects {
     }
     
     dependencies {
-        compile 'org.influxdb:influxdb-java:2.5'
+        compile 'org.influxdb:influxdb-java:2.7'
     }
 }

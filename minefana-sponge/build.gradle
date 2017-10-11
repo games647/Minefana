@@ -4,13 +4,7 @@ plugins {
 
 dependencies {
     compile project(':minefana-common')
-    compile 'org.spongepowered:spongeapi:7.0.0'
-}
-
-processResources {
-    from('src/main/resources') {
-        expand 'version': project.version
-    }
+    compile 'org.spongepowered:spongeapi:6.0.0'
 }
 
 shadowJar {

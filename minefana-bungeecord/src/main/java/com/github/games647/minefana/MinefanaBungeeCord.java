@@ -49,8 +49,8 @@ public class MinefanaBungeeCord extends Plugin {
         if (Files.notExists(configFile)) {
             try (InputStream in = getResourceAsStream("config.yml")) {
                 Files.copy(in, configFile);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ioEx) {
+                getLogger().log(Level.SEVERE, "Failed to create default config", ioEx);
             }
         }
     }

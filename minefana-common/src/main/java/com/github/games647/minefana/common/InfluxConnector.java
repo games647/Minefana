@@ -1,8 +1,8 @@
 package com.github.games647.minefana.common;
 
 import java.io.Closeable;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import org.influxdb.InfluxDB;
@@ -38,12 +38,12 @@ public class InfluxConnector implements Closeable {
     }
 
     public void send(Point measurement) {
-        send(Arrays.asList(measurement));
+        send(Collections.singletonList(measurement));
     }
 
-    public void send(List<Point> measurements) {
+    public void send(Collection<Point> measurements) {
         BatchPoints batchPoints = BatchPoints.database(database).retentionPolicy("autogen").build();
-        measurements.stream().forEach(batchPoints::point);
+        measurements.forEach(batchPoints::point);
         connection.write(batchPoints);
     }
 
