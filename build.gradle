@@ -17,6 +17,11 @@ subprojects {
 
     repositories {
         mavenCentral()
+        maven {
+            name = 'sonatype-oss-repo'
+            url = 'https://oss.sonatype.org/content/groups/public/'
+        }
+
         jcenter()
     }
     

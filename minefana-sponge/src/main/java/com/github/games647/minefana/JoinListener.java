@@ -33,6 +33,6 @@ public class JoinListener {
                 .addField("max", Sponge.getServer().getMaxPlayers())
                 .build();
 
-        plugin.getInfluxConnector().send(playerPoint);
+        plugin.getCore().getConnector().send(playerPoint);
     }
 }

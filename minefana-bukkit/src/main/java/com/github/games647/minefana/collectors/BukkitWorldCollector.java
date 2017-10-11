@@ -22,6 +22,11 @@ public class BukkitWorldCollector extends WorldCollector<World> {
     }
 
     @Override
+    protected String getName(World world) {
+        return world.getName();
+    }
+
+    @Override
     protected int getChunks(World world) {
         return world.getLoadedChunks().length;
     }

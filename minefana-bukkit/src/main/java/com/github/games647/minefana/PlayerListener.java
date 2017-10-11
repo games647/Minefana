@@ -34,6 +34,6 @@ public class PlayerListener implements Listener {
                 .addField("max", Bukkit.getMaxPlayers())
                 .build();
 
-        plugin.getInfluxConnector().send(playerPoint);
+        plugin.getCore().getConnector().send(playerPoint);
     }
 }

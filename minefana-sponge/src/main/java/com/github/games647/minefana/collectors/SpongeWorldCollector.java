@@ -21,6 +21,11 @@ public class SpongeWorldCollector extends WorldCollector<World> {
     }
 
     @Override
+    protected String getName(World world) {
+        return world.getName();
+    }
+
+    @Override
     protected int getChunks(World world) {
         return Iterables.size(world.getLoadedChunks());
     }
