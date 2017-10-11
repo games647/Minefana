@@ -4,6 +4,7 @@ import com.github.games647.minefana.collectors.SpongeWorldCollector;
 import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.AnalyticsPlugin;
 import com.github.games647.minefana.common.collectors.GeoCollector;
+import com.github.games647.minefana.common.collectors.PingCollector;
 import com.github.games647.minefana.common.collectors.TpsCollector;
 import com.google.inject.Inject;
 
@@ -67,6 +68,13 @@ public class MinefanaSponge implements AnalyticsPlugin {
         Task.builder()
                 .interval(1, TimeUnit.SECONDS)
                 .execute(new TpsCollector(core.getConnector(), Sponge.getServer()::getTicksPerSecond))
+                .submit(this);
+
+        Task.builder()
+                .interval(2, TimeUnit.SECONDS)
+                .execute(new PingCollector(core.getConnector(), () -> Sponge.getServer().getOnlinePlayers().stream()
+                        .mapToInt(player -> player.getConnection().getLatency())
+                        .average().orElse(0)))
                 .submit(this);
 
         Task.builder().interval(5, TimeUnit.MINUTES)
