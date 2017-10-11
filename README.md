@@ -16,12 +16,12 @@ Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 * TPS (ticks per second)
 * Average player ping
 * Players, loaded chunks, entities, tile entities per world
+* Player Country
 
 ## Planned
 
 * Player client version
 * Server ping/queries with the protocol version
-* Player GEO_IP
 * Players per server (Bungee)
 * Unique new users
 * Player Locale
@@ -31,3 +31,8 @@ Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 Example from the Grafana repository
 
 ![grafana dashboard](https://grafana.org/assets/img/features/dashboard_ex1.png)
+
+## Credits
+
+This product includes GeoLite2 data created by MaxMind, available from
+<a href="https://www.maxmind.com">https://www.maxmind.com</a>.

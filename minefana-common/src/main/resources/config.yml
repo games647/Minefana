@@ -5,3 +5,7 @@ db_url: 'http://127.0.0.1:8086'
 db_name: 'minecraft_stats'
 db_user: 'username'
 db_pass: 'pass'
+
+# Should we try to geo-locate the IP-address using the MaxMind database?
+# If this is enabled the database will be downloaded after every server startup.
+geo-ip: false

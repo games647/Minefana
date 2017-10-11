@@ -3,11 +3,13 @@ package com.github.games647.minefana;
 import com.github.games647.minefana.collectors.SpongeWorldCollector;
 import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.AnalyticsPlugin;
+import com.github.games647.minefana.common.collectors.GeoCollector;
 import com.github.games647.minefana.common.collectors.TpsCollector;
 import com.google.inject.Inject;
 
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -69,6 +71,12 @@ public class MinefanaSponge implements AnalyticsPlugin {
 
         Task.builder().interval(5, TimeUnit.MINUTES)
                 .execute(new SpongeWorldCollector(core.getConnector()))
+                .submit(this);
+
+        Task.builder().interval(15, TimeUnit.MINUTES)
+                .execute(new GeoCollector(core, () -> Sponge.getServer().getOnlinePlayers().stream()
+                        .map(player -> player.getConnection().getAddress().getAddress())
+                        .collect(Collectors.toList())))
                 .submit(this);
     }
 

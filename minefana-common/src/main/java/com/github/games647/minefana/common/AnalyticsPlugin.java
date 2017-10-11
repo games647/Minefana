@@ -15,4 +15,5 @@ public interface AnalyticsPlugin {
     Logger getLog();
 
     AnalyticsCore getCore();
+
 }
