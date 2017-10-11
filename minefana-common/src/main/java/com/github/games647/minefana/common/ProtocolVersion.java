@@ -32,7 +32,7 @@ public enum ProtocolVersion {
         this.protocol = protocol;
     }
 
-    public ProtocolVersion getVersion(int protocol) {
+    public static ProtocolVersion getVersion(int protocol) {
         return byId.getOrDefault(protocol, UNKNOWN);
     }
 

@@ -1,22 +1,18 @@
 package com.github.games647.minefana;
 
+import com.github.games647.minefana.collectors.SpongePlayerCollector;
 import com.github.games647.minefana.collectors.SpongeWorldCollector;
 import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.AnalyticsPlugin;
-import com.github.games647.minefana.common.collectors.GeoCollector;
-import com.github.games647.minefana.common.collectors.LocaleCollector;
 import com.github.games647.minefana.common.collectors.PingCollector;
 import com.github.games647.minefana.common.collectors.TpsCollector;
 import com.google.inject.Inject;
 
 import java.nio.file.Path;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -85,17 +81,7 @@ public class MinefanaSponge implements AnalyticsPlugin {
                 .submit(this);
 
         Task.builder().interval(15, TimeUnit.MINUTES)
-                .execute(new GeoCollector(core, () -> Sponge.getServer().getOnlinePlayers().stream()
-                        .map(player -> player.getConnection().getAddress().getAddress())
-                        .collect(Collectors.toList())))
-                .submit(this);
-
-        Task.builder().interval(15, TimeUnit.MINUTES)
-                .execute(new LocaleCollector(core.getConnector(), () -> Sponge.getServer().getOnlinePlayers().stream()
-                        .map(CommandSource::getLocale)
-                        .map(Locale::getDisplayName)
-                        .collect(Collectors.toList())))
-                .submit(this);
+                .execute(new SpongePlayerCollector(core)).submit(this);
     }
 
     @Override

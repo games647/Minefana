@@ -18,10 +18,10 @@ Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 * Players, loaded chunks, entities, tile entities per world
 * Player Country
 * Player Locale
+* Player client version
 
 ## Planned
 
-* Player client version
 * Server ping/queries with the protocol version
 * Players per server (Bungee)
 * Unique new users

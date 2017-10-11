@@ -12,9 +12,9 @@ import org.influxdb.dto.Point;
 
 public class PlayerListener implements Listener {
 
-    private final MinefanaBungeeCord plugin;
+    private final MinefanaBungee plugin;
 
-    public PlayerListener(MinefanaBungeeCord plugin) {
+    public PlayerListener(MinefanaBungee plugin) {
         this.plugin = plugin;
     }
 

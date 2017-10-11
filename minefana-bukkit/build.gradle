@@ -3,11 +3,17 @@ repositories {
         name = 'spigotmc-repo'
         url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
     }
+
+    maven {
+        name = 'luck-repo'
+        url = 'https://repo.lucko.me/'
+    }
 }
 
 dependencies {
     compile project(':minefana-common')
-    compile 'org.bukkit:bukkit:1.12-R0.1-SNAPSHOT'
+    compile 'org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT'
+    compile 'io.github.protocolsupport:protocolsupport:4.27-dev'
 }
 
 processResources {
