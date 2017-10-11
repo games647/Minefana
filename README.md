@@ -12,18 +12,21 @@ Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 
 ## Stats
 
-* online players / may players
+* Online players / max players
 * TPS (ticks per second)
 * Average player ping
+* Players, loaded chunks, entities, tile entities per world
 
 ## Planned
 
 * Player client version
+* Server ping/queries with the protocol version
 * Player GEO_IP
+* Players per server (Bungee)
 * Unique new users
-* Player Locale, view distance, 
+* Player Locale
 
-## Screenshot
+## Screenshots
 
 Example from the Grafana repository
 

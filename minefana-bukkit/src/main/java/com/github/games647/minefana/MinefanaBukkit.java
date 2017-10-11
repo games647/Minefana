@@ -1,5 +1,6 @@
 package com.github.games647.minefana;
 
+import com.github.games647.minefana.collectors.BukkitWorldCollector;
 import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.AnalyticsPlugin;
 import com.github.games647.minefana.common.collectors.PingCollector;
@@ -62,6 +63,8 @@ public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
                 .average()
                 .orElse(0));
         scheduler.runTaskTimer(this, pingTask, 40L, 40L);
+
+        scheduler.runTaskTimer(this, new BukkitWorldCollector(core.getConnector()), 5 * 60 * 20L, 5 * 60 * 20L);
     }
 
     @Override

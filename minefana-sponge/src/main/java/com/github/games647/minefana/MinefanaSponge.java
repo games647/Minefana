@@ -1,5 +1,6 @@
 package com.github.games647.minefana;
 
+import com.github.games647.minefana.collectors.SpongeWorldCollector;
 import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.AnalyticsPlugin;
 import com.github.games647.minefana.common.collectors.TpsCollector;
@@ -64,6 +65,10 @@ public class MinefanaSponge implements AnalyticsPlugin {
         Task.builder()
                 .interval(1, TimeUnit.SECONDS)
                 .execute(new TpsCollector(core.getConnector(), Sponge.getServer()::getTicksPerSecond))
+                .submit(this);
+
+        Task.builder().interval(5, TimeUnit.MINUTES)
+                .execute(new SpongeWorldCollector(core.getConnector()))
                 .submit(this);
     }
 
