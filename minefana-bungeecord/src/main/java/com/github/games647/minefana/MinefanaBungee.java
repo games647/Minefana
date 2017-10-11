@@ -1,7 +1,6 @@
 package com.github.games647.minefana;
 
 import com.github.games647.minefana.collectors.BungeePlayerCollector;
-import com.github.games647.minefana.collectors.ForgeCollector;
 import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.AnalyticsPlugin;
 import com.github.games647.minefana.common.collectors.PingCollector;
@@ -59,7 +58,6 @@ public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
         scheduler.schedule(this, pingTask, 2, 2, TimeUnit.SECONDS);
 
         scheduler.schedule(this, new BungeePlayerCollector(core), 15, 15, TimeUnit.MINUTES);
-        scheduler.schedule(this, new ForgeCollector(core.getConnector()), 15, 15, TimeUnit.MINUTES);
     }
 
     @Override
