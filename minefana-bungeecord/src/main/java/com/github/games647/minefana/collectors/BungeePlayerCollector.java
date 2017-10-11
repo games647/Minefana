@@ -17,11 +17,6 @@ public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer> {
     }
 
     @Override
-    public void run() {
-        super.run();
-    }
-
-    @Override
     protected Collection<? extends ProxiedPlayer> getOnlinePlayers() {
         return ProxyServer.getInstance().getPlayers();
     }

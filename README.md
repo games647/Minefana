@@ -19,12 +19,13 @@ Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 * Player Country
 * Player Locale
 * Player client version
+* Players per server (Bungee)
 
 ## Planned
 
 * Server ping/queries with the protocol version
-* Players per server (Bungee)
 * Unique new users
+* Update changes only on Events
 
 ## Screenshots
 

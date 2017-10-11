@@ -8,6 +8,8 @@ public enum AnalyticsType {
     PLAYERS,
     PROTOCOL,
 
+    BUNGEE_PLAYER_PER_SERVER,
+
     WORLD_PLAYERS,
     WORLD_CHUNKS,
     WORLD_ENTITIES,
@@ -22,7 +24,7 @@ public enum AnalyticsType {
     NEW_USER,
     RETURNING_PLAYERS,
 
-    FORGE_USERS,
+    FORGE_USER,
     FORGE_MODS,
 
     LOCALE,
