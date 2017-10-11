@@ -3,9 +3,11 @@ package com.github.games647.minefana;
 import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.AnalyticsPlugin;
 import com.github.games647.minefana.common.collectors.GeoCollector;
+import com.github.games647.minefana.common.collectors.LocaleCollector;
 import com.github.games647.minefana.common.collectors.PingCollector;
 
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -60,6 +62,11 @@ public class MinefanaBungeeCord extends Plugin implements AnalyticsPlugin {
 
         scheduler.schedule(this, new GeoCollector(core, () -> getProxy().getPlayers().stream()
                 .map(player -> player.getAddress().getAddress())
+                .collect(Collectors.toList())), 15, 15, TimeUnit.MINUTES);
+
+        scheduler.schedule(this, new LocaleCollector(core.getConnector(), () -> getProxy().getPlayers().stream()
+                .map(ProxiedPlayer::getLocale)
+                .map(Locale::getDisplayName)
                 .collect(Collectors.toList())), 15, 15, TimeUnit.MINUTES);
     }
 

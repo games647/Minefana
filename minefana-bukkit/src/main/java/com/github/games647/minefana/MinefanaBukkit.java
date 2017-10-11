@@ -4,6 +4,7 @@ import com.github.games647.minefana.collectors.BukkitWorldCollector;
 import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.AnalyticsPlugin;
 import com.github.games647.minefana.common.collectors.GeoCollector;
+import com.github.games647.minefana.common.collectors.LocaleCollector;
 import com.github.games647.minefana.common.collectors.PingCollector;
 import com.github.games647.minefana.common.collectors.TpsCollector;
 
@@ -11,6 +12,7 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -68,8 +70,14 @@ public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
 
         scheduler.runTaskTimer(this, new BukkitWorldCollector(core.getConnector()), 5 * 60 * 20L, 5 * 60 * 20L);
 
-        scheduler.runTaskTimer(this, new GeoCollector(core, () -> Bukkit.getOnlinePlayers().stream()
+        scheduler.runTaskTimer(this, new GeoCollector(core, () -> Bukkit.getOnlinePlayers()
+                .stream()
                 .map(player -> player.getAddress().getAddress())
+                .collect(Collectors.toList())), 15 * 60 * 20L, 15 * 60 * 20L);
+
+        scheduler.runTaskTimer(this, new LocaleCollector(core.getConnector(), () -> Bukkit.getOnlinePlayers()
+                .stream()
+                .map(Player::getLocale)
                 .collect(Collectors.toList())), 15 * 60 * 20L, 15 * 60 * 20L);
     }
 

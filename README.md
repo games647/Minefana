@@ -17,6 +17,7 @@ Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 * Average player ping
 * Players, loaded chunks, entities, tile entities per world
 * Player Country
+* Player Locale
 
 ## Planned
 
@@ -24,7 +25,6 @@ Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 * Server ping/queries with the protocol version
 * Players per server (Bungee)
 * Unique new users
-* Player Locale
 
 ## Screenshots
 
