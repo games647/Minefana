@@ -28,6 +28,7 @@ import org.spongepowered.api.scheduler.Task;
 )
 public class MinefanaSponge implements AnalyticsPlugin {
 
+    private SpongePlayerCollector playerCollector;
     private AnalyticsCore core;
 
     @Inject
@@ -46,6 +47,8 @@ public class MinefanaSponge implements AnalyticsPlugin {
             return;
         }
 
+        playerCollector = new SpongePlayerCollector(core);
+
         registerEvents();
         registerTasks();
     }
@@ -59,7 +62,7 @@ public class MinefanaSponge implements AnalyticsPlugin {
 
     @Override
     public void registerEvents() {
-        Sponge.getEventManager().registerListeners(this, new JoinListener(this));
+        Sponge.getEventManager().registerListeners(this, new SpongeListener(this));
     }
 
     @Override
@@ -81,7 +84,7 @@ public class MinefanaSponge implements AnalyticsPlugin {
                 .submit(this);
 
         Task.builder().interval(15, TimeUnit.MINUTES)
-                .execute(new SpongePlayerCollector(core)).submit(this);
+                .execute(playerCollector).submit(this);
     }
 
     @Override
@@ -97,5 +100,9 @@ public class MinefanaSponge implements AnalyticsPlugin {
     @Override
     public AnalyticsCore getCore() {
         return core;
+    }
+
+    public SpongePlayerCollector getPlayerCollector() {
+        return playerCollector;
     }
 }

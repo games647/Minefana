@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
 
     private final Logger logger = LoggerFactory.getLogger(getDescription().getName());
+
+    private BungeePlayerCollector playerCollector;
     private AnalyticsCore core;
 
     @Override
@@ -29,6 +31,8 @@ public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
         if (!core.loadConfig()) {
             return;
         }
+
+        playerCollector = new BungeePlayerCollector(core);
 
         registerEvents();
         registerTasks();
@@ -44,7 +48,7 @@ public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
     @Override
     public void registerEvents() {
         PluginManager pluginManager = getProxy().getPluginManager();
-        pluginManager.registerListener(this, new PlayerListener(this));
+        pluginManager.registerListener(this, new BungeeListener(this));
     }
 
     @Override
@@ -57,7 +61,7 @@ public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
                 .average().orElse(0));
         scheduler.schedule(this, pingTask, 2, 2, TimeUnit.SECONDS);
 
-        scheduler.schedule(this, new BungeePlayerCollector(core), 15, 15, TimeUnit.MINUTES);
+        scheduler.schedule(this, playerCollector, 15, 15, TimeUnit.MINUTES);
     }
 
     @Override
@@ -73,5 +77,9 @@ public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
     @Override
     public AnalyticsCore getCore() {
         return core;
+    }
+
+    public BungeePlayerCollector getPlayerCollector() {
+        return playerCollector;
     }
 }

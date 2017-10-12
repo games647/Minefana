@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
 
     private final Logger logger = LoggerFactory.getLogger(getName());
+    private BukkitPlayerCollector playerCollector;
+
     private AnalyticsCore core;
 
     @Override
@@ -31,8 +33,9 @@ public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
             return;
         }
 
-        registerEvents();
+        playerCollector = new BukkitPlayerCollector(core);
         registerTasks();
+        registerEvents();
     }
 
     @Override
@@ -45,7 +48,7 @@ public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
     @Override
     public void registerEvents() {
         PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new PlayerListener(this), this);
+        pluginManager.registerEvents(new BukkitListener(this), this);
     }
 
     @Override
@@ -66,7 +69,7 @@ public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
         scheduler.runTaskTimer(this, pingTask, 40L, 40L);
 
         scheduler.runTaskTimer(this, new BukkitWorldCollector(core.getConnector()), 5 * 60 * 20L, 5 * 60 * 20L);
-        scheduler.runTaskTimer(this, new BukkitPlayerCollector(core), 15 * 60 * 20L, 15 * 60 * 20L);
+        scheduler.runTaskTimer(this, playerCollector, 15 * 60 * 20L, 15 * 60 * 20L);
     }
 
     @Override
@@ -82,5 +85,9 @@ public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
     @Override
     public AnalyticsCore getCore() {
         return core;
+    }
+
+    public BukkitPlayerCollector getPlayerCollector() {
+        return playerCollector;
     }
 }

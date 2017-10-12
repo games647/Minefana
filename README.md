@@ -4,27 +4,25 @@
 
 Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 
-## Platforms
-
-* BungeeCord
-* Spigot
-* Sponge
-
 ## Stats
 
-* Online players / max players
-* TPS (ticks per second)
-* Average player ping
-* Players, loaded chunks, entities, tile entities per world
-* Player Country
-* Player Locale
-* Player client version
-* Players per server (Bungee)
+| Feature                       | Spigot    | BungeeCord    | Sponge    |
+| :---------------------------: | :-------: | :-----------: | :-------: |
+| Online players / max players  | X         | X             | X         |
+| Average player ping           | X         | X             | X         |
+| Player Country                | X         | X             | X         |
+| Player Locale                 | X         | X             | X         |
+| Player protocol version       | X         | X             |           |
+| TPS (ticks per second)        | X         |               | X         |
+| Players, chunks, entities, 
+  tile entities per world       | X         |               | X         |
+| Players per server            |           | X             |           |
+| Forge mods                    |           | X             |           |
 
 ## Planned
 
-* Server ping/queries with the protocol version
-* Unique new users
+* Unique new and returning users
+* Session and daily play time
 * Update changes only on Events
 
 ## Screenshots

@@ -1,17 +1,18 @@
 package com.github.games647.minefana.collectors;
 
 import com.github.games647.minefana.common.AnalyticsCore;
+import com.github.games647.minefana.common.AnalyticsPlayer;
 import com.github.games647.minefana.common.ProtocolVersion;
 import com.github.games647.minefana.common.collectors.PlayerCollector;
 
 import java.net.InetAddress;
-import java.util.Collection;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import protocolsupport.api.ProtocolSupportAPI;
 
-public class BukkitPlayerCollector extends PlayerCollector<Player> {
+public class BukkitPlayerCollector extends PlayerCollector<Player, AnalyticsPlayer> {
 
     private final boolean protocolSupported;
 
@@ -19,11 +20,6 @@ public class BukkitPlayerCollector extends PlayerCollector<Player> {
         super(core);
 
         this.protocolSupported = Bukkit.getPluginManager().isPluginEnabled("ProtocolSupport");
-    }
-
-    @Override
-    protected Collection<? extends Player> getOnlinePlayers() {
-        return Bukkit.getOnlinePlayers();
     }
 
     @Override
@@ -43,5 +39,27 @@ public class BukkitPlayerCollector extends PlayerCollector<Player> {
         }
 
         return null;
+    }
+
+    @Override
+    protected UUID getUUID(Player player) {
+        return player.getUniqueId();
+    }
+
+    @Override
+    public void onPlayerJoin(Player player) {
+        UUID uuid = getUUID(player);
+
+        String locale = getLocale(player);
+        InetAddress address = getAddress(player);
+        ProtocolVersion protocol = getProtocol(player);
+
+        AnalyticsPlayer model = new AnalyticsPlayer(locale, address, protocol);
+        players.put(uuid, model);
+    }
+
+    @Override
+    protected int getMaxPlayers() {
+        return Bukkit.getMaxPlayers();
     }
 }

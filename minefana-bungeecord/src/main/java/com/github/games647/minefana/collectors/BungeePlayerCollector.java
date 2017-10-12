@@ -1,5 +1,6 @@
 package com.github.games647.minefana.collectors;
 
+import com.github.games647.minefana.BungeeAnalyticsPlayer;
 import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.AnalyticsType;
 import com.github.games647.minefana.common.ProtocolVersion;
@@ -7,16 +8,17 @@ import com.github.games647.minefana.common.collectors.PlayerCollector;
 
 import java.net.InetAddress;
 import java.util.Collection;
-import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.connection.Server;
+import net.md_5.bungee.api.event.ServerSwitchEvent;
 
-public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer> {
+public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer, BungeeAnalyticsPlayer> {
 
     public BungeePlayerCollector(AnalyticsCore core) {
         super(core);
@@ -26,29 +28,22 @@ public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer> {
     public void run() {
         super.run();
 
-        int forgeUsers = (int) getOnlinePlayers().stream().filter(ProxiedPlayer::isForgeUser).count();
+        int forgeUsers = (int) players.values().stream().filter(BungeeAnalyticsPlayer::isForgeUser).count();
         send(AnalyticsType.FORGE_USER.newPoint().addField("users", forgeUsers));
 
-        addFields(AnalyticsType.FORGE_MODS, getOnlinePlayers().stream()
-                .map(ProxiedPlayer::getModList)
-                .map(Map::keySet)
+        addFields(AnalyticsType.FORGE_MODS, players.values().stream()
+                .map(BungeeAnalyticsPlayer::getMods)
                 .flatMap(Collection::stream)
                 .collect(Collectors.groupingBy(
                         Function.identity(), Collectors.counting()
                 )));
 
-        addFields(AnalyticsType.BUNGEE_PLAYER_PER_SERVER, getOnlinePlayers().stream()
-                .map(ProxiedPlayer::getServer)
-                .map(Server::getInfo)
-                .map(ServerInfo::getName)
+        addFields(AnalyticsType.BUNGEE_PLAYER_PER_SERVER, players.values().stream()
+                .map(BungeeAnalyticsPlayer::getCurrentServer)
+                .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(
                         Function.identity(), Collectors.counting()
                 )));
-    }
-
-    @Override
-    protected Collection<? extends ProxiedPlayer> getOnlinePlayers() {
-        return ProxyServer.getInstance().getPlayers();
     }
 
     @Override
@@ -64,5 +59,43 @@ public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer> {
     @Override
     protected ProtocolVersion getProtocol(ProxiedPlayer player) {
         return ProtocolVersion.getVersion(player.getPendingConnection().getVersion());
+    }
+
+    @Override
+    protected UUID getUUID(ProxiedPlayer player) {
+        return player.getUniqueId();
+    }
+
+    @Override
+    protected int getMaxPlayers() {
+        return ProxyServer.getInstance().getConfig().getPlayerLimit();
+    }
+
+    @Override
+    public void onPlayerJoin(ProxiedPlayer player) {
+        UUID uuid = getUUID(player);
+
+        String locale = getLocale(player);
+        InetAddress address = getAddress(player);
+        ProtocolVersion protocol = getProtocol(player);
+        boolean forgeUser = player.isForgeUser();
+        Set<String> mods = player.getModList().keySet();
+
+        BungeeAnalyticsPlayer model = new BungeeAnalyticsPlayer(locale, address, protocol, forgeUser, mods);
+        model.setCurrentServer(getCurrentServer(player));
+        players.put(uuid, model);
+    }
+
+    public void onServerSwitch(ServerSwitchEvent switchEvent) {
+        ProxiedPlayer player = switchEvent.getPlayer();
+        BungeeAnalyticsPlayer bungeeAnalyticsPlayer = players.get(player.getUniqueId());
+        if (bungeeAnalyticsPlayer != null) {
+            String currentServer = getCurrentServer(player);
+            bungeeAnalyticsPlayer.setCurrentServer(currentServer);
+        }
+    }
+
+    private String getCurrentServer(ProxiedPlayer player) {
+        return player.getServer().getInfo().getName();
     }
 }

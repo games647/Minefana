@@ -15,14 +15,8 @@ public enum AnalyticsType {
     WORLD_ENTITIES,
     WORLD_TILE_ENTITIES,
 
-    TOTAL_CONNECTIONS,
-    UNIQUE_CONNECTIONS,
-
-    SESSION_PLAYTIME,
-    DAILY_PLAYTIME,
-
-    NEW_USER,
-    RETURNING_PLAYERS,
+    DAILY_PLAYTIME, //this includes daily average and session average
+    USERS, //returning users and new users
 
     FORGE_USER,
     FORGE_MODS,
