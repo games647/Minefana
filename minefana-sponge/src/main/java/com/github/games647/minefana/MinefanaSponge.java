@@ -28,36 +28,29 @@ import org.spongepowered.api.scheduler.Task;
 )
 public class MinefanaSponge implements AnalyticsPlugin {
 
-    private SpongePlayerCollector playerCollector;
-    private AnalyticsCore core;
-
-    @Inject
-    private Logger logger;
+    private final Logger logger;
+    private final AnalyticsCore core;
+    private final SpongePlayerCollector playerCollector;
 
     @Inject
     @DefaultConfig(sharedRoot = false)
     private Path pluginFolder;
 
+    @Inject
+    public MinefanaSponge(Logger logger) {
+        this.logger = logger;
+        this.core = new AnalyticsCore(this, logger);
+        this.playerCollector = new SpongePlayerCollector(core);
+    }
+
     @Listener
     public void onServerInit(GameInitializationEvent initEvent) {
-        core = new AnalyticsCore(this, logger);
-        core.saveDefaultConfig();
-
-        if (!core.loadConfig()) {
-            return;
-        }
-
-        playerCollector = new SpongePlayerCollector(core);
-
-        registerEvents();
-        registerTasks();
+        core.initialize();
     }
 
     @Listener
     public void onServerStop(GameStoppingServerEvent stoppingEvent) {
-        if (core != null) {
-            core.close();
-        }
+        core.close();
     }
 
     @Override
@@ -102,6 +95,7 @@ public class MinefanaSponge implements AnalyticsPlugin {
         return core;
     }
 
+    @Override
     public SpongePlayerCollector getPlayerCollector() {
         return playerCollector;
     }

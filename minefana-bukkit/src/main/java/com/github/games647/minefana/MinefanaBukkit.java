@@ -19,30 +19,19 @@ import org.slf4j.LoggerFactory;
 public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
 
     private final Logger logger = LoggerFactory.getLogger(getName());
-    private BukkitPlayerCollector playerCollector;
-
-    private AnalyticsCore core;
+    private final AnalyticsCore core = new AnalyticsCore(this, logger);
+    private final BukkitPlayerCollector playerCollector= new BukkitPlayerCollector(core);
 
     @Override
     public void onEnable() {
-        core = new AnalyticsCore(this, logger);
-        core.saveDefaultConfig();
-
-        if (!core.loadConfig()) {
+        if (!core.initialize()) {
             getServer().getPluginManager().disablePlugin(this);
-            return;
         }
-
-        playerCollector = new BukkitPlayerCollector(core);
-        registerTasks();
-        registerEvents();
     }
 
     @Override
     public void onDisable() {
-        if (core != null) {
-            core.close();
-        }
+        core.close();
     }
 
     @Override
@@ -87,6 +76,7 @@ public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
         return core;
     }
 
+    @Override
     public BukkitPlayerCollector getPlayerCollector() {
         return playerCollector;
     }

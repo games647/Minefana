@@ -19,30 +19,17 @@ import org.slf4j.LoggerFactory;
 public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
 
     private final Logger logger = LoggerFactory.getLogger(getDescription().getName());
-
-    private BungeePlayerCollector playerCollector;
-    private AnalyticsCore core;
+    private final AnalyticsCore core = new AnalyticsCore(this, logger);
+    private final BungeePlayerCollector playerCollector = new BungeePlayerCollector(core);
 
     @Override
     public void onEnable() {
-        core = new AnalyticsCore(this, logger);
-        core.saveDefaultConfig();
-
-        if (!core.loadConfig()) {
-            return;
-        }
-
-        playerCollector = new BungeePlayerCollector(core);
-
-        registerEvents();
-        registerTasks();
+        core.initialize();
     }
 
     @Override
     public void onDisable() {
-        if (core != null) {
-            core.close();
-        }
+        core.close();
     }
 
     @Override
@@ -79,6 +66,7 @@ public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
         return core;
     }
 
+    @Override
     public BungeePlayerCollector getPlayerCollector() {
         return playerCollector;
     }

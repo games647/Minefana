@@ -39,7 +39,19 @@ public class AnalyticsCore {
         this.logger = logger;
     }
 
-    public boolean loadConfig() {
+    public boolean initialize() {
+        saveDefaultConfig();
+
+        if (!loadConfig()) {
+            return false;
+        }
+
+        plugin.registerTasks();
+        plugin.registerEvents();
+        return true;
+    }
+
+    private boolean loadConfig() {
         ConfigurationProvider provider = ConfigurationProvider.getProvider(YamlConfiguration.class);
 
         Path configFile = plugin.getPluginFolder().resolve(CONFIG_FILE_NAME);
@@ -65,7 +77,7 @@ public class AnalyticsCore {
         return false;
     }
 
-    public void saveDefaultConfig() {
+    private void saveDefaultConfig() {
         Path dataFolder = plugin.getPluginFolder();
 
         try {

@@ -38,19 +38,13 @@ public class SpongePlayerCollector extends PlayerCollector<Player, AnalyticsPlay
     }
 
     @Override
-    public void onPlayerJoin(Player player) {
-        UUID uuid = getUUID(player);
-
-        String locale = getLocale(player);
-        InetAddress address = getAddress(player);
-        ProtocolVersion protocol = getProtocol(player);
-
-        AnalyticsPlayer model = new AnalyticsPlayer(locale, address, protocol);
-        players.put(uuid, model);
+    protected int getMaxPlayers() {
+        return Sponge.getServer().getMaxPlayers();
     }
 
     @Override
-    protected int getMaxPlayers() {
-        return Sponge.getServer().getMaxPlayers();
+    protected AnalyticsPlayer newAnalyticsPlayer(Player player, String locale, InetAddress address,
+                                                 ProtocolVersion protocol) {
+        return new AnalyticsPlayer(locale, address, protocol);
     }
 }

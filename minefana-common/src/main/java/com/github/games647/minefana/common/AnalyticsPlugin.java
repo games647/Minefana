@@ -1,5 +1,7 @@
 package com.github.games647.minefana.common;
 
+import com.github.games647.minefana.common.collectors.PlayerCollector;
+
 import java.nio.file.Path;
 
 import org.slf4j.Logger;
@@ -16,4 +18,5 @@ public interface AnalyticsPlugin {
 
     AnalyticsCore getCore();
 
+    PlayerCollector<?, ?> getPlayerCollector();
 }

@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
 import protocolsupport.api.ProtocolSupportAPI;
 
 public class BukkitPlayerCollector extends PlayerCollector<Player, AnalyticsPlayer> {
@@ -47,19 +48,13 @@ public class BukkitPlayerCollector extends PlayerCollector<Player, AnalyticsPlay
     }
 
     @Override
-    public void onPlayerJoin(Player player) {
-        UUID uuid = getUUID(player);
-
-        String locale = getLocale(player);
-        InetAddress address = getAddress(player);
-        ProtocolVersion protocol = getProtocol(player);
-
-        AnalyticsPlayer model = new AnalyticsPlayer(locale, address, protocol);
-        players.put(uuid, model);
+    protected int getMaxPlayers() {
+        return Bukkit.getMaxPlayers();
     }
 
     @Override
-    protected int getMaxPlayers() {
-        return Bukkit.getMaxPlayers();
+    protected AnalyticsPlayer newAnalyticsPlayer(Player player, String locale, InetAddress address,
+                                                 ProtocolVersion protocol) {
+        return new AnalyticsPlayer(locale, address, protocol);
     }
 }

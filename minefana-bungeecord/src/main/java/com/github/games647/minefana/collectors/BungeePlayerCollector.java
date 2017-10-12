@@ -71,21 +71,6 @@ public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer, Bungee
         return ProxyServer.getInstance().getConfig().getPlayerLimit();
     }
 
-    @Override
-    public void onPlayerJoin(ProxiedPlayer player) {
-        UUID uuid = getUUID(player);
-
-        String locale = getLocale(player);
-        InetAddress address = getAddress(player);
-        ProtocolVersion protocol = getProtocol(player);
-        boolean forgeUser = player.isForgeUser();
-        Set<String> mods = player.getModList().keySet();
-
-        BungeeAnalyticsPlayer model = new BungeeAnalyticsPlayer(locale, address, protocol, forgeUser, mods);
-        model.setCurrentServer(getCurrentServer(player));
-        players.put(uuid, model);
-    }
-
     public void onServerSwitch(ServerSwitchEvent switchEvent) {
         ProxiedPlayer player = switchEvent.getPlayer();
         BungeeAnalyticsPlayer bungeeAnalyticsPlayer = players.get(player.getUniqueId());
@@ -97,5 +82,16 @@ public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer, Bungee
 
     private String getCurrentServer(ProxiedPlayer player) {
         return player.getServer().getInfo().getName();
+    }
+
+    @Override
+    protected BungeeAnalyticsPlayer newAnalyticsPlayer(ProxiedPlayer player, String locale, InetAddress address,
+                                                       ProtocolVersion protocol) {
+        boolean forgeUser = player.isForgeUser();
+        Set<String> mods = player.getModList().keySet();
+
+        BungeeAnalyticsPlayer model = new BungeeAnalyticsPlayer(locale, address, protocol, forgeUser, mods);
+        model.setCurrentServer(getCurrentServer(player));
+        return model;
     }
 }

@@ -63,9 +63,18 @@ public abstract class PlayerCollector<P, T extends AnalyticsPlayer> extends Abst
 
     protected abstract int getMaxPlayers();
 
-    public abstract void onPlayerJoin(P player);
+    public void onPlayerJoin(P player) {
+        UUID uuid = getUUID(player);
+
+        String locale = getLocale(player);
+        InetAddress address = getAddress(player);
+        ProtocolVersion protocol = getProtocol(player);
+        players.put(uuid, newAnalyticsPlayer(player, locale, address, protocol));
+    }
 
     public void onPlayerQuit(P player) {
         players.remove(getUUID(player));
     }
+
+    protected abstract T newAnalyticsPlayer(P player, String locale, InetAddress address, ProtocolVersion protocol);
 }
