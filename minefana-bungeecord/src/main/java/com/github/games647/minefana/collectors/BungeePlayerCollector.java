@@ -57,6 +57,11 @@ public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer, Bungee
     }
 
     @Override
+    protected boolean isNew(ProxiedPlayer player) {
+        return false;
+    }
+
+    @Override
     protected ProtocolVersion getProtocol(ProxiedPlayer player) {
         return ProtocolVersion.getVersion(player.getPendingConnection().getVersion());
     }

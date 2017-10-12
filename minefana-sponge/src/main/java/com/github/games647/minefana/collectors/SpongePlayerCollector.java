@@ -28,6 +28,11 @@ public class SpongePlayerCollector extends PlayerCollector<Player, AnalyticsPlay
     }
 
     @Override
+    protected boolean isNew(Player player) {
+        return !player.lastPlayed().exists() || player.firstPlayed().get().equals(player.lastPlayed().get());
+    }
+
+    @Override
     protected ProtocolVersion getProtocol(Player player) {
         return null;
     }

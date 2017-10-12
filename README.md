@@ -14,15 +14,11 @@ Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 | Player Locale                 | X         | X             | X         |
 | Player protocol version       | X         | X             |           |
 | TPS (ticks per second)        | X         |               | X         |
+| New players                   | X         |               | X         |
 | Players, chunks, entities, 
   tile entities per world       | X         |               | X         |
 | Players per server            |           | X             |           |
 | Forge mods                    |           | X             |           |
-
-## Planned
-
-* Unique new and returning users
-* Session and daily play time
 
 ## Compiling
 

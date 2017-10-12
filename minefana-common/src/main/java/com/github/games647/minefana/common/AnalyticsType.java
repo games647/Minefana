@@ -8,15 +8,13 @@ public enum AnalyticsType {
     PLAYERS,
     PROTOCOL,
 
+    USERS,
     BUNGEE_PLAYER_PER_SERVER,
 
     WORLD_PLAYERS,
     WORLD_CHUNKS,
     WORLD_ENTITIES,
     WORLD_TILE_ENTITIES,
-
-    DAILY_PLAYTIME, //this includes daily average and session average
-    USERS, //returning users and new users
 
     FORGE_USER,
     FORGE_MODS,

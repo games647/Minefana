@@ -43,6 +43,11 @@ public class BukkitPlayerCollector extends PlayerCollector<Player, AnalyticsPlay
     }
 
     @Override
+    protected boolean isNew(Player player) {
+        return !player.hasPlayedBefore();
+    }
+
+    @Override
     protected UUID getUUID(Player player) {
         return player.getUniqueId();
     }

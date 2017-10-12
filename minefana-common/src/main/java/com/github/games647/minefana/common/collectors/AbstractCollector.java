@@ -10,7 +10,7 @@ import org.influxdb.dto.Point;
 
 public abstract class AbstractCollector implements Runnable {
 
-    private final InfluxConnector connector;
+    protected final InfluxConnector connector;
 
     public AbstractCollector(InfluxConnector connector) {
         this.connector = connector;

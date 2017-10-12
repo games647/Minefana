@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 
 public abstract class PlayerCollector<P, T extends AnalyticsPlayer> extends AbstractCollector {
 
+    private int newPlayers;
+
     protected final Map<UUID, T> players = new HashMap<>();
     private final AnalyticsCore core;
 
@@ -51,6 +53,9 @@ public abstract class PlayerCollector<P, T extends AnalyticsPlayer> extends Abst
         send(AnalyticsType.PLAYERS.newPoint()
                 .addField("online", players.size())
                 .addField("max", getMaxPlayers()));
+
+        send(AnalyticsType.USERS.newPoint().addField("new", newPlayers));
+        newPlayers = 0;
     }
 
     protected abstract String getLocale(P player);
@@ -59,11 +64,17 @@ public abstract class PlayerCollector<P, T extends AnalyticsPlayer> extends Abst
 
     protected abstract ProtocolVersion getProtocol(P player);
 
+    protected abstract boolean isNew(P player);
+
     protected abstract UUID getUUID(P player);
 
     protected abstract int getMaxPlayers();
 
     public void onPlayerJoin(P player) {
+        if (isNew(player)) {
+            newPlayers++;
+        }
+
         UUID uuid = getUUID(player);
 
         String locale = getLocale(player);
