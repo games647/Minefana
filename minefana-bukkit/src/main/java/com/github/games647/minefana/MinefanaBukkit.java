@@ -25,7 +25,7 @@ public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
     @Override
     public void onEnable() {
         if (!core.initialize()) {
-            getServer().getPluginManager().disablePlugin(this);
+            setEnabled(false);
         }
     }
 

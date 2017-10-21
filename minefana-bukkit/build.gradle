@@ -17,13 +17,5 @@ dependencies {
 }
 
 processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        expand 'version': project.version
-    }
-}
-
-shadowJar {
-    dependencies {
-        include(dependency(':minefana-common'))
-    }
+    expand(version: project.version)
 }

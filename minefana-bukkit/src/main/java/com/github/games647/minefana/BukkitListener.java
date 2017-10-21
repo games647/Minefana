@@ -23,8 +23,4 @@ public class BukkitListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent quitEvent) {
         plugin.getPlayerCollector().onPlayerQuit(quitEvent.getPlayer());
     }
-
-    private void sendPlayerUpdate() {
-
-    }
 }

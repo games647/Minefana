@@ -7,8 +7,3 @@ dependencies {
     compile 'org.spongepowered:spongeapi:6.0.0'
 }
 
-shadowJar {
-    dependencies {
-        include(dependency(':minefana-common'))
-    }
-}
