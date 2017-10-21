@@ -37,6 +37,9 @@ subprojects {
         //GEO IP database
         compile 'com.maxmind.geoip2:geoip2:2.9.0'
 
+        // Decompressing tar archive from maxmind
+        compile 'org.apache.commons:commons-compress:1.14'
+
         // Available in all platforms
         compile 'com.google.guava:guava:17.0'
     }
@@ -53,6 +56,10 @@ subprojects {
             include(dependency('com.fasterxml.jackson.core:jackson-core'))
             include(dependency('com.fasterxml.jackson.core:jackson-annotations'))
 
+            include(dependency('org.apache.commons:commons-compress'))
+
+
+
             include(dependency('org.influxdb:influxdb-java'))
             include(dependency('com.squareup.okio:okio'))
             include(dependency('com.squareup.moshi:moshi'))
@@ -66,5 +73,7 @@ subprojects {
             include(dependency('org.slf4j:slf4j-jdk14'))
             include(dependency('org.slf4j:slf4j-api'))
         }
+
+        relocate 'org.apache.commons.compress', 'games647.apache.commons.compress'
     }
 }

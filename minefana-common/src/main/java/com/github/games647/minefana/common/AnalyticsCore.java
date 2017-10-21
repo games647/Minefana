@@ -7,6 +7,9 @@ import com.maxmind.geoip2.exception.AddressNotFoundException;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.record.Country;
 
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,6 +23,13 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.CompressorException;
+import org.apache.commons.compress.compressors.CompressorInputStream;
+import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.slf4j.Logger;
 
 public class AnalyticsCore {
@@ -62,12 +72,12 @@ public class AnalyticsCore {
             String dbUser = config.getString("db_user");
             String dbPass = config.getString("db_pass");
 
-            connector = new InfluxConnector(dbUrl, dbName, dbUser, dbPass);
-            connector.init();
-
             if (config.getBoolean("geo-ip")) {
                 loadGeo();
             }
+
+            connector = new InfluxConnector(dbUrl, dbName, dbUser, dbPass);
+            connector.init();
 
             return true;
         } catch (IOException ioEx) {
@@ -103,8 +113,45 @@ public class AnalyticsCore {
             return;
         }
 
+        Path databaseFile = plugin.getPluginFolder().resolve("GeoLite2-Country.mmdb");
+        try (
+                CompressorInputStream in = new CompressorStreamFactory()
+                        .createCompressorInputStream(CompressorStreamFactory.GZIP,
+                                new FileInputStream(outputPath.toFile()));
+
+                TarArchiveInputStream tarIn = (TarArchiveInputStream) new ArchiveStreamFactory()
+                        .createArchiveInputStream("tar", in)
+        ) {
+            while (tarIn.getNextEntry() != null) {
+                TarArchiveEntry current = tarIn.getCurrentEntry();
+                if (!current.isFile()) {
+                    continue;
+                }
+
+                if (current.getName().endsWith(databaseFile.getFileName().toString())) {
+                    if (Files.notExists(databaseFile)) {
+                        Files.createFile(databaseFile);
+                    }
+
+                    try (BufferedOutputStream out = new BufferedOutputStream(
+                            new FileOutputStream(databaseFile.toFile(), false))) {
+                        int count;
+                        byte data[] = new byte[1024];
+                        while ((count = tarIn.read(data, 0, 1024)) != -1) {
+                            out.write(data, 0, count);
+                        }
+                    }
+
+                    break;
+                }
+            }
+        } catch (IOException | ArchiveException | CompressorException ex) {
+            logger.error("Failed to extract GEO IP database", ex);
+            return;
+        }
+
         try {
-            geoReader = new DatabaseReader.Builder(outputPath.toFile()).withCache(new CHMCache()).build();
+            geoReader = new DatabaseReader.Builder(databaseFile.toFile()).withCache(new CHMCache()).build();
         } catch (IOException ioEx) {
             logger.error("Failed to read GEO IP database", ioEx);
         }
