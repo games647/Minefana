@@ -3,6 +3,7 @@ package com.github.games647.minefana.collectors;
 import com.github.games647.minefana.common.InfluxConnector;
 import com.github.games647.minefana.common.collectors.WorldCollector;
 import com.google.common.collect.Iterables;
+import com.google.inject.Inject;
 
 import java.util.Collection;
 
@@ -11,7 +12,8 @@ import org.spongepowered.api.world.World;
 
 public class SpongeWorldCollector extends WorldCollector<World> {
 
-    public SpongeWorldCollector(InfluxConnector connector) {
+    @Inject
+    SpongeWorldCollector(InfluxConnector connector) {
         super(connector);
     }
 

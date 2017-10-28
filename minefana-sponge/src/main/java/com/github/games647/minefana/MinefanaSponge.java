@@ -4,9 +4,11 @@ import com.github.games647.minefana.collectors.SpongePlayerCollector;
 import com.github.games647.minefana.collectors.SpongeWorldCollector;
 import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.AnalyticsPlugin;
+import com.github.games647.minefana.common.InfluxConnector;
 import com.github.games647.minefana.common.collectors.PingCollector;
 import com.github.games647.minefana.common.collectors.TpsCollector;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +32,7 @@ public class MinefanaSponge implements AnalyticsPlugin {
 
     private final Logger logger;
     private final AnalyticsCore core;
+    private final Injector injector;
     private final SpongePlayerCollector playerCollector;
 
     @Inject
@@ -37,10 +40,15 @@ public class MinefanaSponge implements AnalyticsPlugin {
     private Path pluginFolder;
 
     @Inject
-    public MinefanaSponge(Logger logger) {
+    MinefanaSponge(Logger logger, Injector injector) {
         this.logger = logger;
+
         this.core = new AnalyticsCore(this, logger);
         this.playerCollector = new SpongePlayerCollector(core);
+        this.injector = injector.createChildInjector(binder -> {
+            binder.bind(AnalyticsCore.class).toInstance(core);
+            binder.bind(InfluxConnector.class).toInstance(core.getConnector());
+        });
     }
 
     @Listener
@@ -55,7 +63,7 @@ public class MinefanaSponge implements AnalyticsPlugin {
 
     @Override
     public void registerEvents() {
-        Sponge.getEventManager().registerListeners(this, new SpongeListener(this));
+        Sponge.getEventManager().registerListeners(this, injector.getInstance(SpongeListener.class));
     }
 
     @Override
@@ -72,12 +80,15 @@ public class MinefanaSponge implements AnalyticsPlugin {
                         .average().orElse(0)))
                 .submit(this);
 
-        Task.builder().interval(5, TimeUnit.MINUTES)
-                .execute(new SpongeWorldCollector(core.getConnector()))
+        Task.builder()
+                .interval(5, TimeUnit.MINUTES)
+                .execute(injector.getInstance(SpongeWorldCollector.class))
                 .submit(this);
 
-        Task.builder().interval(15, TimeUnit.MINUTES)
-                .execute(playerCollector).submit(this);
+        Task.builder()
+                .interval(15, TimeUnit.MINUTES)
+                .execute(playerCollector)
+                .submit(this);
     }
 
     @Override

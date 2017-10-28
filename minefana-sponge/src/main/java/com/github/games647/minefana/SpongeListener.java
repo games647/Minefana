@@ -1,5 +1,7 @@
 package com.github.games647.minefana;
 
+import com.google.inject.Inject;
+
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -8,6 +10,7 @@ public class SpongeListener {
 
     private final MinefanaSponge plugin;
 
+    @Inject
     SpongeListener(MinefanaSponge plugin) {
         this.plugin = plugin;
     }
