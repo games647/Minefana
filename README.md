@@ -23,7 +23,7 @@ Sends Minecraft statistics to a InfluxDB to be displayed by a Grafana instance.
 
 1. Install gradle from here: https://gradle.org/install
 2. Run `gradle shadow`
-3. Look inside the folder build for of your target platform (Sponge, Bukkit, BungeeCord) and choose the *-all as the
+3. Look inside the folder build for your target platform (Sponge, Bukkit, BungeeCord) and choose the *-all as the
 target plugin.
 
 ## Screenshots
