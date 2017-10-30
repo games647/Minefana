@@ -76,7 +76,7 @@ public class AnalyticsCore {
                 loadGeo();
             }
 
-            connector = new InfluxConnector(dbUrl, dbName, dbUser, dbPass);
+            connector = new InfluxConnector(dbUrl, dbUser, dbPass, dbName);
             connector.init();
 
             return true;
