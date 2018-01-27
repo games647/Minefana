@@ -91,7 +91,9 @@ public class AnalyticsCore {
         Path dataFolder = plugin.getPluginFolder();
 
         try {
-            Files.createDirectories(dataFolder);
+            if (Files.notExists(dataFolder)) {
+                Files.createDirectories(dataFolder);
+            }
 
             Path configFile = dataFolder.resolve(CONFIG_FILE_NAME);
             if (Files.notExists(configFile)) {

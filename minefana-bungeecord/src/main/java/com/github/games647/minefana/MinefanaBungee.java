@@ -42,7 +42,7 @@ public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
     public void registerTasks() {
         TaskScheduler scheduler = getProxy().getScheduler();
 
-        PingCollector pingTask = new PingCollector(core.getConnector(), () -> getProxy().getPlayers()
+        Runnable pingTask = new PingCollector(core.getConnector(), () -> getProxy().getPlayers()
                 .stream()
                 .mapToInt(ProxiedPlayer::getPing)
                 .average().orElse(0));
