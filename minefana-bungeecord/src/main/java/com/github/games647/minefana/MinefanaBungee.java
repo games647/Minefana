@@ -20,7 +20,7 @@ public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
 
     private final Logger logger = LoggerFactory.getLogger(getDescription().getName());
     private final AnalyticsCore core = new AnalyticsCore(this, logger);
-    private final BungeePlayerCollector playerCollector = new BungeePlayerCollector(core);
+    private BungeePlayerCollector playerCollector;
 
     @Override
     public void onEnable() {
@@ -47,6 +47,8 @@ public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
                 .mapToInt(ProxiedPlayer::getPing)
                 .average().orElse(0));
         scheduler.schedule(this, pingTask, 2, 2, TimeUnit.SECONDS);
+
+        playerCollector = new BungeePlayerCollector(core);
 
         scheduler.schedule(this, playerCollector, 15, 15, TimeUnit.MINUTES);
     }
