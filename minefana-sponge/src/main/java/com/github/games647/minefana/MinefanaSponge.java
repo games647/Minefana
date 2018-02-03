@@ -33,7 +33,7 @@ public class MinefanaSponge implements AnalyticsPlugin {
     private final Logger logger;
     private final AnalyticsCore core;
     private final Injector injector;
-    private final SpongePlayerCollector playerCollector;
+    private SpongePlayerCollector playerCollector;
 
     @Inject
     @DefaultConfig(sharedRoot = false)
@@ -44,7 +44,6 @@ public class MinefanaSponge implements AnalyticsPlugin {
         this.logger = logger;
 
         this.core = new AnalyticsCore(this, logger);
-        this.playerCollector = new SpongePlayerCollector(core);
         this.injector = injector.createChildInjector(binder -> {
             binder.bind(AnalyticsCore.class).toInstance(core);
             binder.bind(InfluxConnector.class).toInstance(core.getConnector());
@@ -54,6 +53,8 @@ public class MinefanaSponge implements AnalyticsPlugin {
     @Listener
     public void onServerInit(GameInitializationEvent initEvent) {
         core.initialize();
+
+        this.playerCollector = new SpongePlayerCollector(core);
     }
 
     @Listener

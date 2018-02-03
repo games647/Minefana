@@ -20,7 +20,7 @@ public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
 
     private final Logger logger = LoggerFactory.getLogger(getName());
     private final AnalyticsCore core = new AnalyticsCore(this, logger);
-    private final BukkitPlayerCollector playerCollector= new BukkitPlayerCollector(core);
+    private BukkitPlayerCollector playerCollector;
 
     @Override
     public void onEnable() {
@@ -58,6 +58,8 @@ public class MinefanaBukkit extends JavaPlugin implements AnalyticsPlugin {
         scheduler.runTaskTimer(this, pingTask, 40L, 40L);
 
         scheduler.runTaskTimer(this, new BukkitWorldCollector(core.getConnector()), 5 * 60 * 20L, 5 * 60 * 20L);
+
+        playerCollector = new BukkitPlayerCollector(core);
         scheduler.runTaskTimer(this, playerCollector, 15 * 60 * 20L, 15 * 60 * 20L);
     }
 
