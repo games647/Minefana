@@ -28,7 +28,7 @@ public class InfluxConnector implements Closeable {
     protected void init() {
         InfluxDB influxDB = InfluxDBFactory.connect(url, username, password);
 
-        if (influxDB.databaseExists(database)) {
+        if (!influxDB.databaseExists(database)) {
             influxDB.createDatabase(database);
         }
 
