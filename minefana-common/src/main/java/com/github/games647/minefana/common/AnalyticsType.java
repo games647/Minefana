@@ -11,10 +11,7 @@ public enum AnalyticsType {
     USERS,
     BUNGEE_PLAYER_PER_SERVER,
 
-    WORLD_PLAYERS,
-    WORLD_CHUNKS,
-    WORLD_ENTITIES,
-    WORLD_TILE_ENTITIES,
+    WORLD,
 
     FORGE_USER,
     FORGE_MODS,
