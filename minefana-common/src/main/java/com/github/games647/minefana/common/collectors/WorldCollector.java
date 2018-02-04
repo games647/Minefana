@@ -24,7 +24,7 @@ public abstract class WorldCollector<W> extends AbstractCollector {
                     .addField("players", getPlayers(world))
                     .addField("chunks", getChunks(world))
                     .addField("entities", getEntities(world))
-                    .addField("tilesEntities", getTileEntities(world));
+                    .addField("tileEntities", getTileEntities(world));
 
             send(pointBuilder);
         }
