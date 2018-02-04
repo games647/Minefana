@@ -15,23 +15,19 @@ public abstract class WorldCollector<W> extends AbstractCollector {
 
     @Override
     public void run() {
-        Point.Builder playersBuilder = AnalyticsType.WORLD_PLAYERS.newPoint();
-        Point.Builder chunksBuilder = AnalyticsType.WORLD_CHUNKS.newPoint();
-        Point.Builder entityBuilder = AnalyticsType.WORLD_ENTITIES.newPoint();
-        Point.Builder tileBuilder = AnalyticsType.WORLD_TILE_ENTITIES.newPoint();
         for (W world : getWorlds()) {
             String worldName = getName(world);
 
-            playersBuilder.addField(worldName, getPlayers(world));
-            chunksBuilder.addField(worldName, getChunks(world));
-            entityBuilder.addField(worldName, getEntities(world));
-            tileBuilder.addField(worldName, getTileEntities(world));
-        }
+            Point.Builder pointBuilder = AnalyticsType.WORLD.newPoint();
 
-        send(playersBuilder);
-        send(chunksBuilder);
-        send(entityBuilder);
-        send(tileBuilder);
+            pointBuilder.tag("world", worldName)
+                    .addField("players", getPlayers(world))
+                    .addField("chunks", getChunks(world))
+                    .addField("entities", getEntities(world))
+                    .addField("tilesEntities", getTileEntities(world));
+
+            send(pointBuilder);
+        }
     }
 
     protected abstract Collection<W> getWorlds();
