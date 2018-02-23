@@ -3,7 +3,7 @@ package com.github.games647.minefana.collectors;
 import com.github.games647.minefana.BungeeAnalyticsPlayer;
 import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.AnalyticsType;
-import com.github.games647.minefana.common.ProtocolVersion;
+import com.github.games647.minefana.common.model.ProtocolVersion;
 import com.github.games647.minefana.common.collectors.PlayerCollector;
 
 import java.net.InetAddress;
@@ -11,12 +11,14 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
+
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
 
 public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer, BungeeAnalyticsPlayer> {
 
@@ -34,15 +36,15 @@ public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer, Bungee
         addFields(AnalyticsType.FORGE_MODS, players.values().stream()
                 .map(BungeeAnalyticsPlayer::getMods)
                 .flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(
-                        Function.identity(), Collectors.counting()
+                .collect(groupingBy(
+                        identity(), counting()
                 )));
 
         addFields(AnalyticsType.BUNGEE_PLAYER_PER_SERVER, players.values().stream()
                 .map(BungeeAnalyticsPlayer::getCurrentServer)
                 .filter(Objects::nonNull)
-                .collect(Collectors.groupingBy(
-                        Function.identity(), Collectors.counting()
+                .collect(groupingBy(
+                        identity(), counting()
                 )));
     }
 

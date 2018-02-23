@@ -1,7 +1,7 @@
 package com.github.games647.minefana;
 
-import com.github.games647.minefana.common.AnalyticsPlayer;
-import com.github.games647.minefana.common.ProtocolVersion;
+import com.github.games647.minefana.common.model.AnalyticsPlayer;
+import com.github.games647.minefana.common.model.ProtocolVersion;
 
 import java.net.InetAddress;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package com.github.games647.minefana.common;
+package com.github.games647.minefana.common.model;
 
 import java.net.InetAddress;
 
@@ -24,5 +24,14 @@ public class AnalyticsPlayer {
 
     public ProtocolVersion getProtocol() {
         return protocol;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + '{' +
+                "locale='" + locale + '\'' +
+                ", address=" + address +
+                ", protocol=" + protocol +
+                '}';
     }
 }

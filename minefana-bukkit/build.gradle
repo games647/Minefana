@@ -12,8 +12,8 @@ repositories {
 
 dependencies {
     compile project(':minefana-common')
-    compile 'org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT'
-    compile 'io.github.protocolsupport:protocolsupport:4.27-dev'
+    compileOnly 'org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT'
+    compileOnly 'io.github.protocolsupport:protocolsupport:4.27-dev'
 }
 
 processResources {

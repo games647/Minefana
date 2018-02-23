@@ -1,4 +1,4 @@
-package com.github.games647.minefana.common;
+package com.github.games647.minefana.common.model;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,5 +38,12 @@ public enum ProtocolVersion {
 
     public int getProtocol() {
         return protocol;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + '{' +
+                "protocol=" + protocol +
+                "} " + super.toString();
     }
 }

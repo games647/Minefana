@@ -1,15 +1,12 @@
 package com.github.games647.minefana.common;
 
+import com.github.games647.minefana.common.model.Country;
 import com.google.common.io.Resources;
+import com.google.gson.JsonElement;
 import com.maxmind.db.CHMCache;
-import com.maxmind.geoip2.DatabaseReader;
-import com.maxmind.geoip2.exception.AddressNotFoundException;
-import com.maxmind.geoip2.exception.GeoIp2Exception;
-import com.maxmind.geoip2.record.Country;
+import com.maxmind.db.Reader;
+import com.maxmind.db.Reader.FileMode;
 
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,17 +29,22 @@ import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.slf4j.Logger;
 
-public class AnalyticsCore {
+public class AnalyticsCore implements AutoCloseable {
 
     private static final String CONFIG_FILE_NAME = "config.yml";
-    private static final String GEO_DATABASE_URL = "https://geolite.maxmind.com/" +
-            "download/geoip/database/GeoLite2-Country.tar.gz";
+
+    private static final String DATABASE_NAME = "GeoLite2-Country";
+    private static final String DATABASE_FILE = DATABASE_NAME + ".mmdb";
+
+    private static final String ARCHIVE_FILE = DATABASE_NAME + ".tar.gz";
+    private static final String GEO_DATABASE_URL = "https://geolite.maxmind.com/download/geoip/database/"
+            + ARCHIVE_FILE;
 
     private final AnalyticsPlugin plugin;
     private final Logger logger;
 
     private InfluxConnector connector;
-    private DatabaseReader geoReader;
+    private Reader geoReader;
 
     public AnalyticsCore(AnalyticsPlugin plugin, Logger logger) {
         this.plugin = plugin;
@@ -66,7 +68,7 @@ public class AnalyticsCore {
 
         Path configFile = plugin.getPluginFolder().resolve(CONFIG_FILE_NAME);
         try {
-            Configuration config = provider.load(configFile.toFile());
+            Configuration config = provider.load(Files.newBufferedReader(configFile));
             String dbUrl = config.getString("db_url");
             String dbName = config.getString("db_name");
             String dbUser = config.getString("db_user");
@@ -107,7 +109,7 @@ public class AnalyticsCore {
     }
 
     private void loadGeo() {
-        Path outputPath = plugin.getPluginFolder().resolve("GeoLite2-Country.tar.gz");
+        Path outputPath = plugin.getPluginFolder().resolve(ARCHIVE_FILE);
         try (OutputStream out = Files.newOutputStream(outputPath)) {
             Resources.copy(new URL(GEO_DATABASE_URL), out);
         } catch (IOException ioEx) {
@@ -115,28 +117,42 @@ public class AnalyticsCore {
             return;
         }
 
-        Path databaseFile = plugin.getPluginFolder().resolve("GeoLite2-Country.mmdb");
+        Path databaseFile = plugin.getPluginFolder().resolve(DATABASE_FILE);
+        try {
+            decompress(outputPath, databaseFile);
+        } catch (IOException | ArchiveException | CompressorException ex) {
+            logger.error("Failed to extract GEO IP database", ex);
+        }
+
+        try {
+            geoReader = new Reader(databaseFile.toFile(), FileMode.MEMORY, new CHMCache());
+        } catch (IOException ioEx) {
+            logger.error("Failed to read GEO IP database", ioEx);
+        }
+    }
+
+    private void decompress(Path outputPath, Path outputFile)
+            throws IOException, ArchiveException, CompressorException {
         try (
                 CompressorInputStream in = new CompressorStreamFactory()
-                        .createCompressorInputStream(CompressorStreamFactory.GZIP,
-                                new FileInputStream(outputPath.toFile()));
+                        .createCompressorInputStream(CompressorStreamFactory.GZIP, Files.newInputStream(outputPath));
 
                 TarArchiveInputStream tarIn = (TarArchiveInputStream) new ArchiveStreamFactory()
                         .createArchiveInputStream("tar", in)
         ) {
+
             while (tarIn.getNextEntry() != null) {
                 TarArchiveEntry current = tarIn.getCurrentEntry();
                 if (!current.isFile()) {
                     continue;
                 }
 
-                if (current.getName().endsWith(databaseFile.getFileName().toString())) {
-                    if (Files.notExists(databaseFile)) {
-                        Files.createFile(databaseFile);
+                if (current.getName().endsWith(outputFile.getFileName().toString())) {
+                    if (Files.notExists(outputFile)) {
+                        Files.createFile(outputFile);
                     }
 
-                    try (BufferedOutputStream out = new BufferedOutputStream(
-                            new FileOutputStream(databaseFile.toFile(), false))) {
+                    try (OutputStream out = Files.newOutputStream(outputFile)) {
                         int count;
                         byte data[] = new byte[1024];
                         while ((count = tarIn.read(data, 0, 1024)) != -1) {
@@ -147,15 +163,6 @@ public class AnalyticsCore {
                     break;
                 }
             }
-        } catch (IOException | ArchiveException | CompressorException ex) {
-            logger.error("Failed to extract GEO IP database", ex);
-            return;
-        }
-
-        try {
-            geoReader = new DatabaseReader.Builder(databaseFile.toFile()).withCache(new CHMCache()).build();
-        } catch (IOException ioEx) {
-            logger.error("Failed to read GEO IP database", ioEx);
         }
     }
 
@@ -165,10 +172,9 @@ public class AnalyticsCore {
         }
 
         try {
-            return Optional.of(geoReader.country(address).getCountry());
-        } catch (AddressNotFoundException notFoundEx) {
-            //ignore
-        } catch (IOException | GeoIp2Exception ex) {
+            JsonElement jsonElement = geoReader.get(address);
+            return Optional.of(Country.of(jsonElement));
+        } catch (Exception ex) {
             logger.error("Failed to lookup country of {}", address, ex);
         }
 
@@ -179,6 +185,7 @@ public class AnalyticsCore {
         return connector;
     }
 
+    @Override
     public void close() {
         if (connector != null) {
             connector.close();

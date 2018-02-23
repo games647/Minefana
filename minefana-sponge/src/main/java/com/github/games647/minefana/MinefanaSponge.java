@@ -26,7 +26,7 @@ import org.spongepowered.api.scheduler.Task;
         id = "minefana-sponge",
         name = "MineFana",
         version = "1.0-SNAPSHOT",
-        description = "Sends minecraft statistics to a InfluxDB to be displayed by grafana"
+        description = "Sends Minecraft statistics to a InfluxDB to be displayed by grafana"
 )
 public class MinefanaSponge implements AnalyticsPlugin {
 
