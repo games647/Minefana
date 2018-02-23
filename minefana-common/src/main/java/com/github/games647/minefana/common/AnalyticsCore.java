@@ -14,6 +14,8 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Optional;
 
 import net.md_5.bungee.config.Configuration;
@@ -110,11 +112,18 @@ public class AnalyticsCore implements AutoCloseable {
 
     private void loadGeo() {
         Path outputPath = plugin.getPluginFolder().resolve(ARCHIVE_FILE);
-        try (OutputStream out = Files.newOutputStream(outputPath)) {
-            Resources.copy(new URL(GEO_DATABASE_URL), out);
-        } catch (IOException ioEx) {
-            logger.error("Failed to download GEO IP database", ioEx);
-            return;
+        if (Files.exists(outputPath)) {
+            try {
+                Instant lastModified = Files.getLastModifiedTime(outputPath).toInstant();
+
+                long days = Duration.between(lastModified, Instant.now()).toDays();
+                if (days > 1) {
+                    downloadDatabase(outputPath);
+                }
+            } catch (IOException e) {
+                logger.error("Failed to read last modification time of {}. Skipping geo IP", outputPath);
+                return;
+            }
         }
 
         Path databaseFile = plugin.getPluginFolder().resolve(DATABASE_FILE);
@@ -122,12 +131,21 @@ public class AnalyticsCore implements AutoCloseable {
             decompress(outputPath, databaseFile);
         } catch (IOException | ArchiveException | CompressorException ex) {
             logger.error("Failed to extract GEO IP database", ex);
+            return;
         }
 
         try {
             geoReader = new Reader(databaseFile.toFile(), FileMode.MEMORY, new CHMCache());
         } catch (IOException ioEx) {
             logger.error("Failed to read GEO IP database", ioEx);
+        }
+    }
+
+    private void downloadDatabase(Path outputPath) {
+        try (OutputStream out = Files.newOutputStream(outputPath)) {
+            Resources.copy(new URL(GEO_DATABASE_URL), out);
+        } catch (IOException ioEx) {
+            logger.error("Failed to download GEO IP database", ioEx);
         }
     }
 
