@@ -54,7 +54,7 @@ public class MinefanaSponge implements AnalyticsPlugin {
     public void onServerInit(GameInitializationEvent initEvent) {
         core.initialize();
 
-        this.playerCollector = new SpongePlayerCollector(core);
+        this.playerCollector = injector.getInstance(SpongePlayerCollector.class);
     }
 
     @Listener

@@ -4,6 +4,7 @@ import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.model.AnalyticsPlayer;
 import com.github.games647.minefana.common.model.ProtocolVersion;
 import com.github.games647.minefana.common.collectors.PlayerCollector;
+import com.google.inject.Inject;
 
 import java.net.InetAddress;
 import java.util.UUID;
@@ -13,7 +14,8 @@ import org.spongepowered.api.entity.living.player.Player;
 
 public class SpongePlayerCollector extends PlayerCollector<Player, AnalyticsPlayer> {
 
-    public SpongePlayerCollector(AnalyticsCore core) {
+    @Inject
+    SpongePlayerCollector(AnalyticsCore core) {
         super(core);
     }
 

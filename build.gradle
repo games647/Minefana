@@ -31,7 +31,7 @@ subprojects {
     }
 
     dependencies {
-        compile 'org.influxdb:influxdb-java:2.8'
+        compile 'org.influxdb:influxdb-java:2.9'
 
         // Platform independent configuration loading
         compile 'net.md-5:bungeecord-config:1.12-SNAPSHOT'
@@ -43,7 +43,7 @@ subprojects {
         compile 'com.github.games647:MaxMind-DB-Reader-java:2.0.1'
 
         // Decompressing tar archive from maxmind
-        compile 'org.apache.commons:commons-compress:1.16.1'
+        compile 'javatar:javatar:2.5'
 
         // Available in all platforms
         compile 'com.google.guava:guava:17.0'
@@ -58,7 +58,8 @@ subprojects {
             // GEO-IP
             include(dependency('com.github.games647:MaxMind-DB-Reader-java'))
 
-            include(dependency('org.apache.commons:commons-compress'))
+            // decompressing
+            include(dependency('javatar:javatar'))
 
             // Influx
             include(dependency('org.influxdb:influxdb-java'))
@@ -74,7 +75,5 @@ subprojects {
             include(dependency('org.slf4j:slf4j-jdk14'))
             include(dependency('org.slf4j:slf4j-api'))
         }
-
-        relocate 'org.apache.commons.compress', 'minefana.apache.commons.compress'
     }
 }
