@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
+import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
@@ -33,7 +34,8 @@ public class InfluxConnector implements Closeable {
         }
 
         // Flush every 2000 Points, at least every 1s
-        influxDB.enableBatch(2_000, 1_000, TimeUnit.MILLISECONDS);
+        influxDB.enableBatch(2_000, 2, TimeUnit.MINUTES);
+        influxDB.enableBatch(BatchOptions.DEFAULTS.jitterDuration(500));
         influxDB.enableGzip();
 
         connection = influxDB;
