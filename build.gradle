@@ -23,11 +23,9 @@ subprojects {
         }
 
         maven {
-            name = 'jitpack.io'
-            url = 'https://jitpack.io/'
+            name = 'codemc-repo'
+            url = 'https://repo.codemc.org/repository/maven-public/'
         }
-
-        jcenter()
     }
 
     dependencies {
@@ -40,7 +38,7 @@ subprojects {
         compile 'org.slf4j:slf4j-jdk14:1.7.25'
 
         //GEO IP database
-        compile 'com.github.games647:MaxMind-DB-Reader-java:2.0.1'
+        compile 'com.maxmind.db:maxmind-db-gson:2.0.2'
 
         // Decompressing tar archive from maxmind
         compile 'javatar:javatar:2.5'
@@ -56,7 +54,7 @@ subprojects {
 
             // Required dependencies that aren't included
             // GEO-IP
-            include(dependency('com.github.games647:MaxMind-DB-Reader-java'))
+            include(dependency('com.maxmind.db:maxmind-db-gson'))
 
             // decompressing
             include(dependency('javatar:javatar'))

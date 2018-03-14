@@ -5,9 +5,9 @@ import com.google.common.io.Resources;
 import com.google.gson.JsonElement;
 import com.ice.tar.TarEntry;
 import com.ice.tar.TarInputStream;
-import com.maxmind.db.CHMCache;
 import com.maxmind.db.Reader;
 import com.maxmind.db.Reader.FileMode;
+import com.maxmind.db.cache.CHMCache;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -111,9 +111,7 @@ public class AnalyticsCore {
         if (Files.exists(outputPath)) {
             try {
                 Instant lastModified = Files.getLastModifiedTime(outputPath).toInstant();
-
-                long days = Duration.between(lastModified, Instant.now()).toDays();
-                if (days > 1) {
+                if (Duration.between(lastModified, Instant.now()).toDays() > 30) {
                     downloadDatabase(outputPath);
                 }
             } catch (IOException e) {
