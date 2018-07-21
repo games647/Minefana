@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
 
-    private final Logger logger = LoggerFactory.getLogger(getDescription().getName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     private final AnalyticsCore core = new AnalyticsCore(this, logger);
     private BungeePlayerCollector playerCollector;
 
