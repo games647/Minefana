@@ -50,7 +50,7 @@ public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer, Bungee
 
     @Override
     protected String getLocale(ProxiedPlayer player) {
-        return player.getLocale().getDisplayName();
+        return player.getDisplayName();
     }
 
     @Override
@@ -88,7 +88,15 @@ public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer, Bungee
     }
 
     private String getCurrentServer(ProxiedPlayer player) {
-        return player.getServer().getInfo().getName();
+        String name;
+        try {
+            name = player.getServer().getInfo().getName();
+
+        }catch (Exception e){
+            System.out.println("Error getting server name");
+            name = "Error";
+        }
+        return name;
     }
 
     @Override
