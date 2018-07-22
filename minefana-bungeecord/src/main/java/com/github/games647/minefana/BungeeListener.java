@@ -7,6 +7,9 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
+
 public class BungeeListener implements Listener {
 
     private final MinefanaBungee plugin;
@@ -17,12 +20,19 @@ public class BungeeListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(ServerConnectedEvent joinEvent) {
-        plugin.getPlayerCollector().onPlayerJoin(joinEvent.getPlayer());
+        plugin.getProxy().getScheduler().schedule(plugin, new Runnable() {
+            @Override
+            public void run() {
+                if(joinEvent.getPlayer() != null){
+                    plugin.getPlayerCollector().onPlayerJoin(joinEvent.getPlayer());
+                }
+            }
+        }, 3, TimeUnit.SECONDS)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuit(PlayerDisconnectEvent quitEvent) {
-        plugin.getPlayerCollector().onPlayerQuit(quitEvent.getPlayer());
+        plugin.getPlayerCollector().onPlayerQuit(quitEvent.getPlayer())
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
