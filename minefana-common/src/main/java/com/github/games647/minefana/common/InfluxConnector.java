@@ -33,9 +33,12 @@ public class InfluxConnector implements Closeable {
             influxDB.createDatabase(database);
         }
 
+
         // Flush every 2000 Points, at least every 1s
         influxDB.enableBatch(2_000, 2, TimeUnit.MINUTES);
-        //influxDB.enableBatch(BatchOptions.DEFAULTS.jitterDuration(500));
+
+        //this throws this warning https://pastebin.com/nUh4b1Md i think it can only be enabled once unless this is ok
+        influxDB.enableBatch(BatchOptions.DEFAULTS.jitterDuration(500));
 
 
         influxDB.enableGzip();
