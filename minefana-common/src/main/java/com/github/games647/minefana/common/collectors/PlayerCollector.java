@@ -23,7 +23,6 @@ import static java.util.stream.Collectors.groupingBy;
 public abstract class PlayerCollector<P, T extends AnalyticsPlayer> extends AbstractCollector {
 
     private int newPlayers;
-    private int old;
 
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
