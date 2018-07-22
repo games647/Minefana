@@ -32,7 +32,7 @@ public class BungeeListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuit(PlayerDisconnectEvent quitEvent) {
-        plugin.getPlayerCollector().onPlayerQuit(quitEvent.getPlayer())
+        plugin.getPlayerCollector().onPlayerQuit(quitEvent.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
