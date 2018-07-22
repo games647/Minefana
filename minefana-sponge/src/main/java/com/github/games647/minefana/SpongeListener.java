@@ -38,7 +38,7 @@ public class SpongeListener {
                     }
                 }
             }
-        }).delayTicks(60);
+        }).delayTicks(60).submit(plugin);
     }
 
     @Listener(order = Order.POST)
