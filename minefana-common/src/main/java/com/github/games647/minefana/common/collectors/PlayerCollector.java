@@ -11,10 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.counting;
@@ -23,8 +19,6 @@ import static java.util.stream.Collectors.groupingBy;
 public abstract class PlayerCollector<P, T extends AnalyticsPlayer> extends AbstractCollector {
 
     private int newPlayers;
-
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     protected final Map<UUID, T> players = new HashMap<>();
     private final AnalyticsCore core;
@@ -79,20 +73,16 @@ public abstract class PlayerCollector<P, T extends AnalyticsPlayer> extends Abst
     protected abstract int getMaxPlayers();
 
     public void onPlayerJoin(P player) {
-        ScheduledFuture<?> runLater = scheduler.schedule(new Runnable() {
-            @Override
-            public void run() {
-                if(player != null){
-                    if (isNew(player)) {
-                        newPlayers++;
-                    }
-                    UUID uuid = getUUID(player);
-                    String locale = getLocale(player);
-                    InetAddress address = getAddress(player);
-                    ProtocolVersion protocol = getProtocol(player);
-                    players.put(uuid, newAnalyticsPlayer(player, locale, address, protocol));
-                }
-            }}, 3, TimeUnit.SECONDS);
+        if (isNew(player)) {
+            newPlayers++;
+        }
+
+        UUID uuid = getUUID(player);
+
+        String locale = getLocale(player);
+        InetAddress address = getAddress(player);
+        ProtocolVersion protocol = getProtocol(player);
+        players.put(uuid, newAnalyticsPlayer(player, locale, address, protocol));
     }
 
     public void onPlayerQuit(P player) {
