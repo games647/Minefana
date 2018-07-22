@@ -17,13 +17,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-    private final AnalyticsCore core = new AnalyticsCore(this, logger);
+    private Logger logger;
+    private AnalyticsCore core;
     private BungeePlayerCollector playerCollector;
 
     @Override
     public void onEnable() {
+        logger = LoggerFactory.getLogger(getDescription().getName());
+        core = new AnalyticsCore(this, logger);
         core.initialize();
     }
 
@@ -48,7 +49,7 @@ public class MinefanaBungee extends Plugin implements AnalyticsPlugin {
                 .average().orElse(0));
         scheduler.schedule(this, pingTask, 2, 2, TimeUnit.SECONDS);
 
-        playerCollector = new BungeePlayerCollector(core);
+        playerCollector = new BungeePlayerCollector(core, this);
 
         scheduler.schedule(this, playerCollector, 15, 15, TimeUnit.MINUTES);
     }
