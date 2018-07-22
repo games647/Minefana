@@ -33,9 +33,14 @@ public class InfluxConnector implements Closeable {
             influxDB.createDatabase(database);
         }
 
+
         // Flush every 2000 Points, at least every 1s
-        influxDB.enableBatch(2_000, 2, TimeUnit.MINUTES);
+        // Only one of these 2 calls should be enabled
+        //influxDB.enableBatch(2_000, 2, TimeUnit.MINUTES);
+
         influxDB.enableBatch(BatchOptions.DEFAULTS.jitterDuration(500));
+
+
         influxDB.enableGzip();
 
         connection = influxDB;

@@ -1,6 +1,7 @@
 package com.github.games647.minefana.collectors;
 
 import com.github.games647.minefana.BungeeAnalyticsPlayer;
+import com.github.games647.minefana.MinefanaBungee;
 import com.github.games647.minefana.common.AnalyticsCore;
 import com.github.games647.minefana.common.AnalyticsType;
 import com.github.games647.minefana.common.model.ProtocolVersion;
@@ -22,8 +23,11 @@ import static java.util.stream.Collectors.groupingBy;
 
 public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer, BungeeAnalyticsPlayer> {
 
-    public BungeePlayerCollector(AnalyticsCore core) {
+    private MinefanaBungee plugin;
+
+    public BungeePlayerCollector(AnalyticsCore core, MinefanaBungee plugin) {
         super(core);
+        this.plugin = plugin;
     }
 
     @Override
@@ -50,7 +54,15 @@ public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer, Bungee
 
     @Override
     protected String getLocale(ProxiedPlayer player) {
-        return player.getLocale().getDisplayName();
+        String locale;
+        try{
+            locale = player.getLocale().getDisplayName();
+        }catch(Exception e){
+            plugin.getLog().error("Error getting locale",e);
+            locale = "Error";
+        }
+
+        return locale;
     }
 
     @Override
@@ -88,7 +100,15 @@ public class BungeePlayerCollector extends PlayerCollector<ProxiedPlayer, Bungee
     }
 
     private String getCurrentServer(ProxiedPlayer player) {
-        return player.getServer().getInfo().getName();
+        String serverName;
+        try {
+            serverName = player.getServer().getInfo().getName();
+
+        }catch (Exception e){
+            plugin.getLog().error("Error getting server name",e);
+            serverName = "Error";
+        }
+        return serverName;
     }
 
     @Override
