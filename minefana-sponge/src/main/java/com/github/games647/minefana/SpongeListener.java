@@ -2,9 +2,16 @@ package com.github.games647.minefana;
 
 import com.google.inject.Inject;
 
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.scheduler.Task;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.UUID;
 
 public class SpongeListener {
 
@@ -17,7 +24,21 @@ public class SpongeListener {
 
     @Listener(order = Order.POST)
     public void onPlayerJoin(ClientConnectionEvent.Join joinEvent) {
-        plugin.getPlayerCollector().onPlayerJoin(joinEvent.getTargetEntity());
+         Task.Builder taskBuild = Task.builder();
+         taskBuild.execute(new Runnable() {
+            @Override
+            public void run() {
+                UUID uuid = joinEvent.getTargetEntity().getUniqueId();
+                Optional<Player> playerOptional = Sponge.getServer().getPlayer(uuid);
+
+                if(playerOptional.isPresent()){
+                    Player p = playerOptional.get();
+                    if(p != null && p.isOnline()){
+                        plugin.getPlayerCollector().onPlayerJoin(p);
+                    }
+                }
+            }
+        }).delayTicks(60);
     }
 
     @Listener(order = Order.POST)
